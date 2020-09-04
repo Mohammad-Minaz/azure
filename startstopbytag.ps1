@@ -14,8 +14,8 @@
     By default this script includes Saturday, Sunday and specific hours(needs input) per day in schedule.
 
 .INPUTS
-    Input $tagname & $TagValue when prompted. While its not case sensitive, please enter the correct tags.
-    Input $StartTime & $StopTime when prompted. These have to be in the following formats:
+    Input $tagname & $tagvalue when prompted. While its not case sensitive, please enter the correct tags.
+    Input $starttime & $stoptime when prompted. These have to be in the following formats:
     06:00 AM
     06:00:00 AM
     18:00
@@ -33,18 +33,18 @@ Param(
     $tagname,
     [Parameter(Mandatory = $true)]
     [String]
-    $TagValue,
+    $tagvalue,
     [Parameter(Mandatory = $true)]
     [String]
-    $StartTime,
+    $starttime,
     [Parameter(Mandatory = $true)]
     [String]
-    $StopTime
+    $stoptime
 )
      
 $connectionName = "AzureRunAsConnection";
-#$StartTime =Get-Date "06:00:00 AM"
-#$StopTime =Get-Date "06:00:00 PM"
+#$starttime =Get-Date "06:00:00 AM"
+#$stoptime =Get-Date "06:00:00 PM"
 try {
     # Get the connection "AzureRunAsConnection "
     $servicePrincipalConnection = Get-AutomationConnection -Name $connectionName        
@@ -76,9 +76,9 @@ Write-Output 'Subscriptions Retrieved:'
 
 Write-output 'PowerShell Variables inputs are..'
 $tagname
-$TagValue
-$StartTime
-$StopTime
+$tagvalue
+$starttime
+$stoptime
 #Time and Day Check
 
 $Now = (Get-Date).ToUniversalTime()  
@@ -87,20 +87,20 @@ $destzone = [System.TimeZoneInfo]::FindSystemTimeZoneById("Pacific Standard Time
 $NowPST = [System.TimeZoneInfo]::ConvertTimeFromUtc($Now, $destzone)
 Write-output "Current Time in PST: "$NowPST
     
-$StartTime=$nowpst.ToShortDateString()+"`t"+$StartTime
-$StartTime = Get-Date $StartTime
+$starttime=$nowpst.ToShortDateString()+"`t"+$starttime
+$starttime = Get-Date $starttime
 
-$StopTime=$nowpst.ToShortDateString()+"`t"+$StopTime
-$StopTime = Get-Date $StopTime
+$stoptime=$nowpst.ToShortDateString()+"`t"+$stoptime
+$stoptime = Get-Date $stoptime
 
-write-output 'Start Time in PST:'$StartTime
-write-output 'Stop Time in PST:'$StopTime
+write-output 'Start Time in PST:'$starttime
+write-output 'Stop Time in PST:'$stoptime
      
 $vms = $null
 foreach ($subs in $Subscriptions) {
     Set-AzureRmContext -Subscription $subs.Id | Out-Null
  
-    $vms = Get-AzureRmResource -tagname $tagname -TagValue $TagValue | where {$_.ResourceType -like "Microsoft.Compute/virtualMachines"}
+    $vms = Get-AzureRmResource -tagname $tagname -tagvalue $tagvalue | where {$_.ResourceType -like "Microsoft.Compute/virtualMachines"}
 
     If ($vms.count -ne "0") {
         foreach ($vm in $vms) {
@@ -108,7 +108,7 @@ foreach ($subs in $Subscriptions) {
             $currentStatus = $VMStatus.Statuses | where Code -like "PowerState*" 
             $currentStatus = $currentStatus.Code -replace "PowerState/", ""
 
-            if ($NowPST.DayOfWeek -eq "Saturday" -or $NowPST.DayOfWeek -eq "Sunday" -or $NowPST -ge $StopTime -or $NowPST -le $StartTime) {
+            if ($NowPST.DayOfWeek -eq "Saturday" -or $NowPST.DayOfWeek -eq "Sunday" -or $NowPST -ge $stoptime -or $NowPST -le $starttime) {
                 # Get VM with current status
                 Write-output 'VM Status:'$vm.Name+"`t"+$currentStatus
 
