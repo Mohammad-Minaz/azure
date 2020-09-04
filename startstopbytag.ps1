@@ -14,7 +14,7 @@
     By default this script includes Saturday, Sunday and specific hours(needs input) per day in schedule.
 
 .INPUTS
-    Input $TagName & $TagValue when prompted. While its not case sensitive, please enter the correct tags.
+    Input $tagname & $TagValue when prompted. While its not case sensitive, please enter the correct tags.
     Input $StartTime & $StopTime when prompted. These have to be in the following formats:
     06:00 AM
     06:00:00 AM
@@ -30,7 +30,7 @@
 Param(
     [Parameter(Mandatory = $true)]
     [String]
-    $TagName,
+    $tagname,
     [Parameter(Mandatory = $true)]
     [String]
     $TagValue,
@@ -75,7 +75,7 @@ Write-Output 'Subscriptions Retrieved:'
 #$Subscriptions
 
 Write-output 'PowerShell Variables inputs are..'
-$TagName
+$tagname
 $TagValue
 $StartTime
 $StopTime
@@ -100,7 +100,7 @@ $vms = $null
 foreach ($subs in $Subscriptions) {
     Set-AzureRmContext -Subscription $subs.Id | Out-Null
  
-    $vms = Get-AzureRmResource -TagName $TagName -TagValue $TagValue | where {$_.ResourceType -like "Microsoft.Compute/virtualMachines"}
+    $vms = Get-AzureRmResource -tagname $tagname -TagValue $TagValue | where {$_.ResourceType -like "Microsoft.Compute/virtualMachines"}
 
     If ($vms.count -ne "0") {
         foreach ($vm in $vms) {
