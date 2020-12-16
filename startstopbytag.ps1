@@ -81,18 +81,18 @@ $stoptime
 
 $Now = (Get-Date).ToUniversalTime()  
 Write-output "Current Time in UTC: "$Now
-$destzone = [System.TimeZoneInfo]::FindSystemTimeZoneById("Pacific Standard Time")
-$NowPST = [System.TimeZoneInfo]::ConvertTimeFromUtc($Now, $destzone)
-Write-output "Current Time in PST: "$NowPST
+$destzone = [System.TimeZoneInfo]::FindSystemTimeZoneById("Indian Standard Time")
+$NowIST = [System.TimeZoneInfo]::ConvertTimeFromUtc($Now, $destzone)
+Write-output "Current Time in IST: "$NowIST
 
-$starttime=$nowpst.ToShortDateString()+"`t"+$starttime
+$starttime=$nowist.ToShortDateString()+"`t"+$starttime
 $starttime = Get-Date $starttime
 
-$stoptime=$nowpst.ToShortDateString()+"`t"+$stoptime
+$stoptime=$nowist.ToShortDateString()+"`t"+$stoptime
 $stoptime = Get-Date $stoptime
 
-write-output 'Start Time in PST:'$starttime
-write-output 'Stop Time in PST:'$stoptime
+write-output 'Start Time in IST:'$starttime
+write-output 'Stop Time in IST:'$stoptime
 
 $vms = $null
 foreach ($subs in $Subscriptions) {
@@ -106,7 +106,7 @@ foreach ($subs in $Subscriptions) {
             $currentStatus = $VMStatus.Statuses | where Code -like "PowerState*" 
             $currentStatus = $currentStatus.Code -replace "PowerState/", ""
 
-            if ($NowPST.DayOfWeek -eq "Saturday" -or $NowPST.DayOfWeek -eq "Sunday" -or $NowPST -ge $stoptime -or $NowPST -le $starttime) {
+            if ($NowIST.DayOfWeek -eq "Saturday" -or $NowIST.DayOfWeek -eq "Sunday" -or $NowIST -ge $stoptime -or $NowIST -le $starttime) {
                 # Get VM with current status
                 Write-output 'VM Status:'$vm.Name+"`t"+$currentStatus
 
