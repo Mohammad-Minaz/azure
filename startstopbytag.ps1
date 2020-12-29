@@ -38,7 +38,7 @@ catch
 } 
           
       
-    $vms = Find-AzResource -TagName $TagName -TagValue $TagValue | where {$_.ResourceType -like "Microsoft.Compute/virtualMachines"} 
+    $vms = Get-AzVm -TagName $TagName -TagValue $TagValue | where {$_.ResourceType -like "Microsoft.Compute/virtualMachines"} 
       
     Foreach -Parallel ($vm in $vms){ 
          
