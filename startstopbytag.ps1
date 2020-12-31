@@ -36,19 +36,17 @@ catch
         throw $_.Exception
     }
 } 
-          
-      
-    $vms = Get-AzVm -TagName $TagName -TagValue $TagValue | where {$_.ResourceType -like "Microsoft.Compute/virtualMachines"} 
+    $vms = Get-AzResource -TagName $TagName -TagValue $TagValue | where {$_.ResourceType -like "Microsoft.Compute/virtualMachines"} 
       
     Foreach -Parallel ($vm in $vms){ 
          
         if($Shutdown){ 
             Write-Output "Stopping $($vm.Name)";         
-            Stop-AzVm -Name $vm.Name -ResourceGroupName $vm.ResourceGroupName -Force; 
+            Stop-AzVM -Name $vm.Name -ResourceGroupName $vm.ResourceGroupName -Force; 
         } 
         else{ 
             Write-Output "Starting $($vm.Name)";         
-            Start-AzVm -Name $vm.Name -ResourceGroupName $vm.ResourceGroupName; 
+            Start-AzVM -Name $vm.Name -ResourceGroupName $vm.ResourceGroupName; 
         } 
     } 
 }
