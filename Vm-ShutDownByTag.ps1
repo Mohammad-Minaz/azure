@@ -1,4 +1,4 @@
-workflow ShutDownStartByTag 
+workflow Vm-ShutDownByTag
 { 
         Param( 
         [Parameter(Mandatory=$true)] 
